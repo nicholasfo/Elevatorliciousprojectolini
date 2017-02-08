@@ -1,1 +1,70 @@
-bla bla bla
+Vi har 3 use cases: 
+I: Initialiser heis
+II: Plassér ordre
+III: Kjør heis
+==================================
+Use case I: Initialiser heis
+  Precondition: 
+    Ingen
+  Trigger: 
+    Spenning på
+  Hovedscenario:
+    1. Heisen beveger seg nedover til nærmeste etasje og stopper der. 
+    2. Ignorerer bestillinger før initialisering er ferdig
+    3. Stoppknappen skal kunne være i bruk under initialisering, men ikke stå inne (i tilfelle uforutsette hendelser). 
+  Utvidelse:
+    1a. Heisen står allerede i en etasje.
+      1. Gå til punkt 2. 
+  Garantier:
+    - Dørene er lukket
+    - Heisen er ved en etasje
+====================================
+Use case II: Plassér ordre
+  Precondition: 
+    heisen er påslått og initialisering er ferdig
+  Trigger: 
+    Passasjer trykker på opp- eller nedknapp på etasjepanel, eller velger etasjeknapp på heispanel. 
+  Hovedscenario:
+    1. Køsystemet registrerer ordre
+    2. Lyset på knappen lyser til heisen har ankommet etasjen
+  Utvidelse:
+    1a. Heisen er allerede bestilt til samme etasje
+      1. Gå til punkt 2
+  Garantier:
+    - Hver ordre skal bli registrert
+=======================================
+Use case III: Kjør heis
+  Precondition: 
+    - heisen er ikke stoppet
+    - det er plassert ordre i køsystemet
+    - dørene er lukket 
+  Trigger: 
+    - Timeren i en etasje er ferdig
+    - Ny bestilling sendt inn til en tom kø
+  Hovedscenario:
+    1. Dørene er lukket
+    2. Heisen kjører til etasje
+    3. Når heisen beveger seg, skal etasjeindikatorene vise den siste etasjen heisen var i. 
+    4. Heisen kommer til etasjen og stopper. 
+    5. Dørene åpnes i tre sekunder
+    6. Dørene lukkes
+    7. Køsystemet fjerner ordren
+  Utvidelse: 
+    1a. Stopp-knappen trykkes inn under bevegelse
+      1. Heisen stopper uansett hvor den befinner seg
+      2. Alle bestillinger slettes og ingen bestillinger kan tas i mot
+      3. Stoppknappen deaktiveres
+      4. Heisen står i ro inntil nye bestillinger tas i mot
+      5. Gå til punkt 1. 
+    1b. Heisen står allerede i ønsket etasje
+      1. Gå til punkt 5. 
+    1c. Heisen kjører og det kommer bestilling fra motsatt retning
+      1. Fortsett å kjøre til alle ordre i kjøreretning er betjent
+      2. Gå til punkt 1. 
+   Minimal garanti: 
+    - Heisen kommer til en etasje
+   Maksimal garanti:
+    - Heisen kommer til valgt etasje
+      
+    
+      
