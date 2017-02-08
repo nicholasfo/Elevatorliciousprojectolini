@@ -63,7 +63,7 @@ Use case III: Kjør heis
       2. Gå til punkt 1. 
    Minimal garanti: 
     - Heisen kommer til en etasje
-   Maksimal garanti:
+   Suksessgaranti:
     - Heisen kommer til valgt etasje
       
     
