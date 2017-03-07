@@ -3,6 +3,8 @@
 //Adds elements to the array for upward motion:
 void queueAdd(int array[3], int floor){
 
+	array[floor-1] = floor;
+
 };
 
 
@@ -18,8 +20,8 @@ int queueIsEmpty(int array[3]){
 };
 
 //Removes the last arrived floor from array:
-void queuePop(int array[3]){
-
+void queuePop(int array[3], int floor){
+	array[floor-1] = 0;
 
 };
 

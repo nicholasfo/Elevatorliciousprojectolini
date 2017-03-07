@@ -1,7 +1,10 @@
 //headerfil for fsm.c
 
+//Set elevator in a state
+//int fsmSetState(state state);
+
 //Start state-machine:
-int fsmStart();
+void fsmStart();
 
 //Stop state-machine:
 int fsmStopp();

@@ -8,7 +8,7 @@ void queueAdd(int array[], int floor);
 int queueIsEmpty(int array[]);
 
 //Removes the last arrived floor from array:
-void queuePop(int array[]);
+void queuePop(int array[], int floor);
 
 //Returns the next destination floor from array:
 int queueGetNext(int array[]);
