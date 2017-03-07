@@ -1,35 +1,37 @@
 
 
-//Adds elements to the array for upward motion:
-void queueAdd(int array[3], int floor){
+//Adds elements to the arrays:
+void queueAddUp(int array[3], int floor){				//[Opp i 1., Opp i 2., Opp i 3.]
+	array[floor] = 1;
+}
 
-	array[floor-1] = floor;
-
-};
+void queueAddDown(int array[3], int floor) {			//[Ned i 2., Ned i 3., Ned i 4.]
+	array[floor] = 1;
+}
 
 
 //Checks if the queue is empty:
 int queueIsEmpty(int array[3]){
-	if(array[0] && array [1] && array [2] == 0) {
+	if((array[0] && array [1] && array [2]) == 0) {
 		return 1;
 	}
 	else {
 		return 0;
 	}
 
-};
+}
 
 //Removes the last arrived floor from array:
-void queuePop(int array[3], int floor){
-	array[floor-1] = 0;
+void queuePopFloor(int array[3], int floor){
+	array[floor] = 0;
 
-};
+}
 
 //Returns the next destination floor from array:
 int queueGetNext(int array[3]){
 
 
-};
+}
 
 //Clears floor-array when stop-button is pressed:
 void queueClear(int array[3]){
@@ -38,4 +40,4 @@ void queueClear(int array[3]){
 		array[i] = 0;
 	}
 
-};
+}

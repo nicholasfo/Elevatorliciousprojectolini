@@ -5,17 +5,12 @@
 
 
 int main() {
-    // Initialize hardware
-    
-
-    printf("Press STOP button to stop elevator and exit program.\n");
-
-    //int UP_array[3] = 0;
-    //int DOWN_array[3] = 0;
-
-    fsmStart();
+	fsmStart();									//initialiserer, kjører til en etasje og stopper der.
 
     while(1){
+		if (elev_get_stop_signal() == 1) {
+			fsmStopp();							//Slett bestillinger, setter heis tilbake i IDLE
+		}
         
 
     }

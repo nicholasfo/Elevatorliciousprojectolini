@@ -6,6 +6,9 @@
 //Start state-machine:
 void fsmStart();
 
+//Receive orders
+void fsmTakeOrders();
+
 //Stop state-machine:
 int fsmStopp();
 
@@ -17,9 +20,3 @@ int fsmStillOrdersInQueue();
 
 //Stops the elevator when arraived at ordered floor:
 int fsmStopAtFloor();
-
-//Checks if stop-button is pressed:
-int fsmStopPressed();
-
-//Checks if stop-button is released:
-int fsmStopReleased();
