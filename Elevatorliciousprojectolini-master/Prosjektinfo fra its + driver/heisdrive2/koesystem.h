@@ -2,10 +2,7 @@
 
 
 //Adds elements to the array for upward motion:
-void queueAddUp(int array[], int floor);
-
-//Adds elements to the array for downward motion:
-void queueAddDown(int array[], int floor);
+void queueAdd(int array[], int floor);
 
 //Checks if the queue is empty:
 int queueIsEmpty(int array[]);

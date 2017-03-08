@@ -1,14 +1,9 @@
 
 
 //Adds elements to the arrays:
-void queueAddUp(int array[3], int floor){				//[Opp i 1., Opp i 2., Opp i 3.]
+void queueAdd(int array[], int floor){				//[Opp i 1., Opp i 2., Opp i 3.]
 	array[floor] = 1;
 }
-
-void queueAddDown(int array[3], int floor) {			//[Ned i 2., Ned i 3., Ned i 4.]
-	array[floor] = 1;
-}
-
 
 //Checks if the queue is empty:
 int queueIsEmpty(int array[]){
@@ -28,9 +23,9 @@ void queuePopFloor(int array[], int floor){
 }
 
 //Returns the next destination floor from array:
-int queueGetNext(int arraydown[],int arrayup[], int direction){
+int queueGetNext(int arraydown[], int arrayup[], int direction){
 	int next = -2;
-	if (!(queueIsEmpty(arraydown[])) && !(queueIsEmpty(arrayup[]))) {
+	if (!(queueIsEmpty(arraydown)) && !(queueIsEmpty(arrayup))) {
 		//kan benytte switch (direction)?
 		if (direction == -1) {
 			if (arraydown[2]) {
