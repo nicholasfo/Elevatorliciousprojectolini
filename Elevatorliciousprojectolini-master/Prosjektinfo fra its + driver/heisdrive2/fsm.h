@@ -1,4 +1,6 @@
 //headerfil for fsm.c
+extern int direction;
+extern int lastFloor;
 
 //Set elevator in a state
 //int fsmSetState(state state);
@@ -10,7 +12,7 @@ void fsmStart();
 void fsmTakeOrders();
 
 //Stop state-machine:
-int fsmStopp();
+int fsmStop();
 
 //Run statemachine
 void fsmRun();
@@ -19,7 +21,7 @@ void fsmRun();
 int fsmSetDirection();
 
 //Is state-machine at ordered floor:
-int fsmCorrectFloor(int lastFloor, elev_motor_direction_t motordirection);
+//int fsmCorrectFloor(int lastFloor, elev_motor_direction_t motordirection);
 
 //Stops the elevator when arraived at ordered floor:
 void fsmStopAtFloor(int floor);

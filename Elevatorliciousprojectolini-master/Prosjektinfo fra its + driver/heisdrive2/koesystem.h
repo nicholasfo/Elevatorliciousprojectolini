@@ -1,5 +1,7 @@
 //Headerfil for Koesystem.c
 
+extern int arrayUp[3];
+extern int arrayDown[3];
 
 //Adds elements to the array for upward motion:
 void queueAdd(int array[], int floor);
@@ -11,7 +13,17 @@ int queueIsEmpty(int array[]);
 void queuePopFloor(int array[], int floor);
 
 //Returns the next destination floor from array:
-int queueGetNext(int arraydown[], int arrayup[], int direction);
+int queueGetNextFloor(int arraydown[], int arrayup[], int direction);
 
 //Clears floor-array when stop-button is pressed:
 void queueClear(int array[]);
+
+//Prints current queue
+void queuePrint();
+
+//Gets next direction
+int queueGetNextDir(int arraydown[], int arrayup[], int floor);
+
+//get next direction
+//floor and dir to queuePos
+//queuePos to floor
