@@ -10,11 +10,13 @@ int main() {
 
     while(1){
 		if (elev_get_stop_signal() == 1) {
-			//fsmStop();							//Deletes orderes and sets stop-light.
+			fsmStop();							//Deletes orderes and sets stop-light.
 		}
 		fsmTakeOrders();						//Orginizes orderes and put then in queue.
 		
 		fsmRun();
+
+		fsmStopAtFloor();
 /*
 		if(moving == 0 && timer_on == 0){
 			//fsmRun();
