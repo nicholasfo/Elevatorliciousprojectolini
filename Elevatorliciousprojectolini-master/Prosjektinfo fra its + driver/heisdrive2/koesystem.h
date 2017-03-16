@@ -13,16 +13,16 @@ int queueIsEmpty(int array[]);
 void queuePopFloor(int floor);
 
 //Returns the next destination floor from array:
-int queueGetNextFloor(int arraydown[], int arrayup[], int direction);
+int queueGetNextFloor(int direction, int floor);
 
 //Clears floor-array when stop-button is pressed:
-void queueClear(int array[]);
+void queueClear();
 
 //Prints current queue
 void queuePrint();
 
 //Gets next direction
-int queueGetNextDir(int arraydown[], int arrayup[], int floor);
+int queueGetNextDir(int direction, int floor);
 
 //get next direction
 //floor and dir to queuePos

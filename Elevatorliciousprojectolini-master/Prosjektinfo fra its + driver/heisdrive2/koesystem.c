@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int arrayDown[3] = {0,0,0};
+int arrayDown[3] = {0,0,0}; //
 int arrayUp[3] = {0,0,0};
 
 
@@ -24,7 +24,7 @@ int queueIsEmpty(int array[]){
 
 void queuePopFloor(int floor){
 	if (floor != 0){
-		arrayDown[floor-1] = 0;
+		arrayDown[3-floor] = 0;
 
 	}
 	if (floor != 3){
@@ -49,10 +49,50 @@ void queuePopFloor(int array[], int floor){
 */
 
 //Returns the next destination floor from array:
-int queueGetNextFloor(int arraydown[], int arrayup[], int floor){
-	
+int queueGetNextFloor(int direction ,int floor){
+	int array; // 1 = UP, -1 = DOWN
+	int i = 0;
+	if ((queueIsEmpty(arrayDown)) && (queueIsEmpty(arrayUp))) {
+		return floor;
+	}	
 
-	if (!(queueIsEmpty(arraydown)) || !(queueIsEmpty(arrayup))) {
+	if((direction == 1 && floor != 3) || (direction == -1 && floor == 0)){
+			array = 1;
+		}
+	else {
+		array = -1;
+	}
+
+	if(array == 1){
+		i = floor;
+	}
+	if(array == -1){
+		i = 3-floor;
+	}
+
+	while(1){
+		if(array == 1){
+			if(arrayUp[i]){
+				return i;
+			}
+
+		}
+		if(array == -1){
+			if(arrayDown[i]){
+				return 3-i;
+			}
+
+		}
+		if(i == 2){
+			array = -array;
+			i = -1;
+		}
+		i++;
+	}
+
+
+
+		/*
 		switch(floor){
 			case 0:
 				if(arrayDown[0] || arrayUp[1]){
@@ -96,10 +136,11 @@ int queueGetNextFloor(int arraydown[], int arrayup[], int floor){
 				}
 			default:
 				return floor;
-
+		
 		}
 
-		/*
+
+		
 		//kan benytte switch (direction)?
 		if (direction == -1) {
 			if (arraydown[2]) {
@@ -131,27 +172,35 @@ int queueGetNextFloor(int arraydown[], int arrayup[], int floor){
 
 		}
 		*/
-	}
+	
 
 }
 
 //Clears floor-array when stop-button is pressed:
-void queueClear(int array[3]){
-	int i;
-	for(i=0; i<3; i++){
-		array[i] = 0;
+void queueClear(){
+	for(int i=0; i<3; i++){
+		arrayUp[i] = 0;
+		arrayDown[i] = 0;
 	}
 
 }
 
 
 void queuePrint(){
-	printf("Up - array %d,%d,%d\n", arrayUp[0], arrayUp[1], arrayUp[2]);
-	printf("Down-array %d,%d,%d\n", arrayDown[0], arrayDown[1], arrayDown[2]);
+	printf("Up - array %d,%d,%d  ", arrayUp[0], arrayUp[1], arrayUp[2]);
+	printf("Down-array %d,%d,%d\n", arrayDown[2], arrayDown[1], arrayDown[0]);
+	return;
 
 }
 
-int queueGetNextDir(int arraydown[], int arrayup[], int floor){
-
+int queueGetNextDir(int direction, int floor){
+	int nextfloor = queueGetNextFloor(direction, floor);
+	if(nextfloor > floor){
+		return 1;
+	}
+	if(nextfloor < floor){
+		return -1;
+	}
 	return 0;
+	
 }
