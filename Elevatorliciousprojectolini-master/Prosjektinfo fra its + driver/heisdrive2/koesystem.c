@@ -21,16 +21,85 @@ int queueIsEmpty(int array[]){
 }
 
 //Removes the last arrived floor from array:
-void queuePopFloor(int array[], int floor){
-	array[floor] = 0;
-	printf("Bestillinger slettet\n");
+
+void queuePopFloor(int floor){
+	if (floor != 0){
+		arrayDown[floor-1] = 0;
+
+	}
+	if (floor != 3){
+		arrayUp[floor] = 0;
+
+	}
 
 }
 
+/*
+void queuePopFloor(int array[], int floor){
+	if (floor != 0){
+		arrayDown[floor-1] = 0;
+
+	}
+	if (floor != 3){
+		arrayUp[floor] = 0;
+
+	}
+
+}
+*/
+
 //Returns the next destination floor from array:
-int queueGetNextFloor(int arraydown[], int arrayup[], int direction){
-	int next = -1;
+int queueGetNextFloor(int arraydown[], int arrayup[], int floor){
+	
+
 	if (!(queueIsEmpty(arraydown)) || !(queueIsEmpty(arrayup))) {
+		switch(floor){
+			case 0:
+				if(arrayDown[0] || arrayUp[1]){
+					return 1;
+				}
+				if(arrayDown[1] || arrayUp[2]){
+					return 2;
+				}
+				if(arrayDown[2]){
+					return 3;
+				}
+			case 1:
+				if (arrayUp[0]){
+					return 0;
+				}
+				if (arrayDown[1] || arrayUp[2]){
+					return 2;
+				}
+				if(arrayDown[2]){
+					return 3;
+				}
+			case 2:
+				if(arrayUp[0]){
+					return 0;
+				}
+				if(arrayDown[0] || arrayUp[1]){
+					return 1;
+				}
+				if(arrayDown[2]){
+					return 3;
+				}
+			case 3:
+				if(arrayUp[0]){
+					return 0;
+				}
+				if(arrayDown[0] || arrayUp[1]){
+					return 1;
+				}
+				if(arrayDown[1] || arrayUp[2]){
+					return 2;
+				}
+			default:
+				return floor;
+
+		}
+
+		/*
 		//kan benytte switch (direction)?
 		if (direction == -1) {
 			if (arraydown[2]) {
@@ -61,8 +130,9 @@ int queueGetNextFloor(int arraydown[], int arrayup[], int direction){
 			}
 
 		}
+		*/
 	}
-	return next;
+
 }
 
 //Clears floor-array when stop-button is pressed:

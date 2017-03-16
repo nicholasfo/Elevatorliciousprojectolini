@@ -10,7 +10,7 @@ void queueAdd(int array[], int floor);
 int queueIsEmpty(int array[]);
 
 //Removes the last arrived floor from array:
-void queuePopFloor(int array[], int floor);
+void queuePopFloor(int floor);
 
 //Returns the next destination floor from array:
 int queueGetNextFloor(int arraydown[], int arrayup[], int direction);
