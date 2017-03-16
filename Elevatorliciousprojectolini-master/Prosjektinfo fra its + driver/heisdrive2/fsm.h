@@ -12,16 +12,13 @@ void fsmStart();
 void fsmTakeOrders();
 
 //Stop state-machine:
-int fsmStop();
+void fsmStop();
 
 //Run statemachine
 void fsmRun();
-
-//Set Direction (variable and motor)
-int fsmSetDirection();
 
 //Is state-machine at ordered floor:
 //int fsmCorrectFloor(int lastFloor, elev_motor_direction_t motordirection);
 
 //Stops the elevator when arraived at ordered floor:
-void fsmStopAtFloor(int floor);
+void fsmStopAtFloor();

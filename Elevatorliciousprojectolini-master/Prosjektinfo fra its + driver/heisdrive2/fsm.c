@@ -6,39 +6,33 @@
 #include <stdio.h>
 
 
-int direction = -2;			// -1 = ned, 0 = stop, 1 = opp
+int direction = 0;		// -1 = ned, 0 = stop, 1 = opp
 int lastFloor;			// 0 = 1.etg, 1 = 2.etg, 2 = 3.etg, 3 = 4.etg
-int nextFloor;
-int lastDirection;			//
+int nextFloor;			
+int lastDirection;		
 
 //Start state-machine:
 void fsmStart(){
 	elev_init();
+	lastDirection = -1;
 	if(elev_get_floor_sensor_signal() == -1) {
 		elev_set_motor_direction(DIRN_DOWN);
-		direction = -1;
 		
 	while(1){
-		if(elev_get_floor_sensor_signal() != -1) {
-			lastFloor = elev_get_floor_sensor_signal();
+		lastFloor = elev_get_floor_sensor_signal();
+		if(lastFloor != -1) {
+
 			elev_set_motor_direction(DIRN_STOP);
 			elev_set_floor_indicator(lastFloor);
 			printf("lastFloor %d\n", lastFloor);
-			direction = 0;
+			
 			break;
 
 			}
 		}
 
 	}
-	/*
-	if(elev_get_floor_sensor_signal() != -1){
-		elev_set_motor_direction(DIRN_STOP);
-		lastFloor = elev_get_floor_sensor_signal();
-		elev_set_floor_indicator(lastFloor);
-		printf("LastFloor %d\n", lastFloor);
-	}
-	*/
+	
 }
 
 
@@ -53,7 +47,7 @@ void fsmTakeOrders() {
 		}
 		if (i != 0) {
 			if (elev_get_button_signal(BUTTON_CALL_DOWN, i) == 1) {
-				queueAdd(arrayDown, i-1);
+				queueAdd(arrayDown, 3-i);
 				elev_set_button_lamp(BUTTON_CALL_DOWN, i, 1);
 			}
 		}
@@ -61,187 +55,106 @@ void fsmTakeOrders() {
 		if (elev_get_button_signal(BUTTON_COMMAND, i) == 1) {
 			elev_set_button_lamp(BUTTON_COMMAND, i, 1);
 			if (i != 0){
-				queueAdd(arrayDown, i-1);
+				queueAdd(arrayDown, 3-i);
 
 			}
 			if (i != 3){
 				queueAdd(arrayUp, i);
 			}
 		}
-		queuePrint();
+		
 		
 	}
-}
-
-//Setter variabelen direction avhengig av hvor heis er og hvilke knapper som er trykket.
-int fsmSetDirection() {
-	if (elev_get_floor_sensor_signal() != -1){
-		int Floor = elev_get_floor_sensor_signal();
-		printf("Floor %d\n", Floor);
-		
-		switch(Floor){
-			case 0:
-				direction = 1;
-				printf("case 0 %d\n", direction);
-				return direction;
-	
-			case 1:	
-
-				if (arrayDown[0]) {
-					direction = -1;
-					printf("case 1 %d\n", direction);
-					return direction;
-				}
-				if (arrayUp[1] || arrayUp[2] || arrayDown[2]) {
-					direction = 1;
-					printf("case 1 %d\n", direction);
-					return direction;
-				}	
-
-			case 2:
-				if (arrayDown[0] || arrayUp[1] || arrayUp[0]) {
-					direction = -1;
-					printf("case 2 %d\n", direction);
-					return direction;
-				}
-				if (arrayDown[2]) {
-					direction = 1;
-					printf("case 2 %d\n", direction);
-					return direction;
-				}
-	
-			case 3: {
-				direction = -1;
-				printf("case 3 %d\n", direction);
-				return direction;
-			}
-			default:
-				if(nextFloor == -1){
-					direction = 0;
-				}
-				direction = 0;
-				printf("Direction %d\n", direction);
-		}
-	}
+	//queuePrint();
 }
 
 //Stop state-machine:
-/*
-int fsmStop(){
-	elev_set_stop_lamp(1);
-	queueClear(arrayUp[]);
-	queueClear(arrayDown[]);
+void fsmStop(){
+	queueClear();
+	elev_clear_all_lamps();
+	elev_set_motor_direction(DIRN_STOP);
+	
+	while(elev_get_stop_signal()){
+		elev_set_stop_lamp(1);
+	}
+	elev_set_stop_lamp(0);
 	return;
 }
-*/
 
-/*
+//Runs statemachine
 void fsmRun(){
-	//printf("LastFloor %d\n", lastFloor);
-	//direction = fsmSetDirection();
-	//printf("Direction %d\n", direction);
-	nextFloor = queueGetNextFloor(arrayDown, arrayUp, fsmSetDirection());
-	//printf("NextFloor %d\n", nextFloor);
+	int floor = elev_get_floor_sensor_signal();
+	nextFloor = queueGetNextFloor(lastDirection, lastFloor);
 
-	while (!(queueIsEmpty(arrayUp)) || !(queueIsEmpty(arrayDown))) {
-		if (fsmSetDirection() == 1) {
-			printf("Skal kjoere oppover\n");
-			elev_set_motor_direction(DIRN_UP);
-			queuePrint();
-			//printf("LastFloor %d\n", lastFloor);
-			//printf("NextFloor %d\n", nextFloor);
-			//printf("Etasje %d\n", elev_get_floor_sensor_signal());
-			//if(elev_get_floor_sensor_signal() != -1){
-			//	lastFloor = nextFloor;
-			//}
-			if (lastFloor == nextFloor){
-			//if (elev_get_floor_sensor_signal() == nextFloor) {
-				printf("Yes, kom endelig inn i up-loop\n");
-				elev_set_floor_indicator(lastFloor);
-				elev_set_motor_direction(DIRN_STOP);
-				queuePopFloor(arrayUp, nextFloor - 1);
-				queuePopFloor(arrayDown, nextFloor);
-				elev_set_button_lamp(BUTTON_COMMAND,nextFloor,0);
-				elev_set_button_lamp(BUTTON_CALL_DOWN,nextFloor,0);
-				elev_set_button_lamp(BUTTON_CALL_UP, nextFloor,0);
-				
-				lastFloor = nextFloor;
-				//direction = fsmSetDirection();
-				nextFloor = queueGetNextFloor(arrayDown, arrayUp, fsmSetDirection());
-				//printf("LastFloor %d\n", lastFloor);
-				//printf("NextFloor %d\n", nextFloor);
-			}
-			break;
-		}
-		
-		if (fsmSetDirection() == -1) {
-			printf("Skal kjoere nedover\n");
-			elev_set_motor_direction(DIRN_DOWN);
-			queuePrint();
-			//printf("LastFloor %d\n", lastFloor);
-			//printf("NextFloor %d\n", nextFloor);
-			//printf("Etasje %d\n", elev_get_floor_sensor_signal());
-			//if(elev_get_floor_sensor_signal() != -1){
-			//	lastFloor = nextFloor;
-			//}
-			if(lastFloor == nextFloor){
-			//if (elev_get_floor_sensor_signal() == nextFloor) {
-				printf("Yes, kom endelig inn i down-loop\n");
-				elev_set_floor_indicator(lastFloor);
-				elev_set_motor_direction(DIRN_STOP);
-				queuePopFloor(arrayUp, nextFloor);
-				queuePopFloor(arrayDown, nextFloor - 1);
-				elev_set_button_lamp(BUTTON_COMMAND,nextFloor,0);
-				elev_set_button_lamp(BUTTON_CALL_DOWN,nextFloor,0);
-				elev_set_button_lamp(BUTTON_CALL_UP, nextFloor,0);
-				
-				lastFloor = nextFloor;
-				//direction = fsmSetDirection();
-				nextFloor = queueGetNextFloor(arrayDown, arrayUp, fsmSetDirection());
-				//printf("LastFloor %d\n", lastFloor);
-				//printf("NextFloor %d\n", nextFloor);
-			}
-			break;
-		}
-		
-		if (fsmSetDirection() == 0) {
-			break;
-		}
-	}
-	return;
-}
-*/
 
-void fsmRun(){
-	fsmSetDirection();
-	nextFloor = queueGetNextFloor(arrayDown, arrayUp, lastFloor);
-	printf("LastFloor %d\n", lastFloor);
-	printf("NextFloor %d\n", nextFloor);
-	if(!(queueIsEmpty(arrayDown) || !(queueIsEmpty(arrayUp)))) {
-
-		if(direction == 1) {
-			printf("Retningen blir satt oppover \n");
-			elev_set_motor_direction(DIRN_UP);
+	
+	direction = queueGetNextDir(lastDirection, lastFloor);
+	
+	
+	if(direction == 1) {
+		//printf("Retningen blir satt oppover \n");
+		elev_set_motor_direction(DIRN_UP);
+		lastDirection = 1;
 			
-		}
+	}
 		
 
-		if(direction == -1) {
-			printf("Retningen blir satt nedover \n");
-			elev_set_motor_direction(DIRN_DOWN);
-			
-		}
-		
-		
+	if(direction == -1) {
+		//printf("Retningen blir satt nedover \n");
+		elev_set_motor_direction(DIRN_DOWN);
+		lastDirection = -1;
 	}
-	if (nextFloor == elev_get_floor_sensor_signal()) {
+
+	printf("%d, %d, %d, %d\n", lastFloor + 1, lastDirection, nextFloor + 1, direction);
+	
+	if(floor == -1){
+		return;
+	}
+	
+	lastFloor = floor;
+	
+
+
+	/*
+	if(nextFloor == floor) {
 		elev_set_motor_direction(DIRN_STOP);
 		queuePopFloor(nextFloor);
-		lastFloor = nextFloor;
+    	elev_set_button_lamp(BUTTON_COMMAND, lastFloor, 0);
+    	switch(lastFloor){
+	        case 0:
+	            elev_set_button_lamp(BUTTON_CALL_UP, 0, 0);
+	            break;
+	        case 1:
+	            elev_set_button_lamp(BUTTON_CALL_UP, 1, 0);
+	            elev_set_button_lamp(BUTTON_CALL_DOWN, 1, 0);
+	            break;
+	        case 2:
+	            elev_set_button_lamp(BUTTON_CALL_UP, 2, 0);
+	            elev_set_button_lamp(BUTTON_CALL_DOWN, 2, 0);
+	            break;
+	        case 3:
+	            elev_set_button_lamp(BUTTON_CALL_DOWN, 3, 0);
+	            break;
+	        default:
+	            break;
+    	}
 	}
+	*/
 	return;
 	
 }	
+
+void fsmStopAtFloor(){
+	//int floor = elev_get_floor_sensor_signal();
+	//lastFloor = floor;
+
+	if(nextFloor == lastFloor && direction == 0) {
+		elev_clear_lamps(lastFloor);
+		elev_set_motor_direction(DIRN_STOP);
+		queuePopFloor(nextFloor);
+    }
+	
+}
 
 /*
 void fsmStopAtFloor(int floor) {

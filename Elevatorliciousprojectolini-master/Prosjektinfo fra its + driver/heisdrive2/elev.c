@@ -145,3 +145,36 @@ void elev_set_button_lamp(elev_button_type_t button, int floor, int value) {
         io_clear_bit(lamp_channel_matrix[floor][button]);
 }
 
+void elev_clear_all_lamps(){
+    elev_button_type_t button_type;
+    for(button_type = BUTTON_CALL_UP; button_type <= BUTTON_COMMAND; button_type++){
+        for(int floor = 0; floor < 4; floor++){
+            if(!((button_type == BUTTON_CALL_UP && floor == 3) || (button_type == BUTTON_CALL_DOWN && floor == 0))){
+                elev_set_button_lamp(button_type, floor, 0);
+            }
+        }
+    }   
+}
+
+void elev_clear_lamps(int floor){
+    elev_set_button_lamp(BUTTON_COMMAND, floor, 0);
+    switch(floor){
+        case 0:
+            elev_set_button_lamp(BUTTON_CALL_UP, 0, 0);
+            break;
+        case 1:
+            elev_set_button_lamp(BUTTON_CALL_UP, 1, 0);
+            elev_set_button_lamp(BUTTON_CALL_DOWN, 1, 0);
+            break;
+        case 2:
+            elev_set_button_lamp(BUTTON_CALL_UP, 2, 0);
+            elev_set_button_lamp(BUTTON_CALL_DOWN, 2, 0);
+            break;
+        case 3:
+            elev_set_button_lamp(BUTTON_CALL_DOWN, 3, 0);
+            break;
+        default:
+            break;
+
+    }
+}
