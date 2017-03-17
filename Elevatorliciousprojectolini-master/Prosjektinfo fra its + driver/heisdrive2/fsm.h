@@ -6,7 +6,7 @@ extern int lastFloor;
 //int fsmSetState(state state);
 
 //Start state-machine:
-void fsmStart();
+void fsmInit();
 
 //Receive orders
 void fsmTakeOrders();

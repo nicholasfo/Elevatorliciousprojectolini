@@ -1,8 +1,8 @@
-//Tilstandsmaskin for denne supre haisen som er kodet av to tullinger som liker sushi og sake bedre enn å ta heis.
 #include "channels.h"
 #include "koesystem.h"
 #include "fsm.h"
 #include "elev.h"
+#include "timer.h"
 #include <stdio.h>
 
 
@@ -11,10 +11,12 @@ int lastFloor;			// 0 = 1.etg, 1 = 2.etg, 2 = 3.etg, 3 = 4.etg
 int nextFloor;			
 int lastDirection;		
 
-//Start state-machine:
-void fsmStart(){
+
+void fsmInit(){
 	elev_init();
+	timerReset();
 	lastDirection = -1;
+	elev_set_door_open_lamp(0);
 	if(elev_get_floor_sensor_signal() == -1) {
 		elev_set_motor_direction(DIRN_DOWN);
 		
@@ -32,7 +34,6 @@ void fsmStart(){
 		}
 
 	}
-	
 }
 
 
@@ -62,15 +63,13 @@ void fsmTakeOrders() {
 				queueAdd(arrayUp, i);
 			}
 		}
-		
-		
 	}
-	//queuePrint();
 }
 
-//Stop state-machine:
+
 void fsmStop(){
 	queueClear();
+	timerReset();
 	elev_clear_all_lamps();
 	elev_set_motor_direction(DIRN_STOP);
 	
@@ -81,115 +80,51 @@ void fsmStop(){
 	return;
 }
 
-//Runs statemachine
+
 void fsmRun(){
+
 	int floor = elev_get_floor_sensor_signal();
 	nextFloor = queueGetNextFloor(lastDirection, lastFloor);
-
-
-	
 	direction = queueGetNextDir(lastDirection, lastFloor);
-	
-	
+
 	if(direction == 1) {
-		//printf("Retningen blir satt oppover \n");
 		elev_set_motor_direction(DIRN_UP);
 		lastDirection = 1;
-			
 	}
 		
-
 	if(direction == -1) {
-		//printf("Retningen blir satt nedover \n");
 		elev_set_motor_direction(DIRN_DOWN);
 		lastDirection = -1;
 	}
 
 	printf("%d, %d, %d, %d\n", lastFloor + 1, lastDirection, nextFloor + 1, direction);
 	
-	if(floor == -1){
+	if(floor == -1){		//Returns if elevator not in a floor
 		return;
 	}
 	
+	elev_set_floor_indicator(lastFloor);
 	lastFloor = floor;
-	
-
-
-	/*
-	if(nextFloor == floor) {
-		elev_set_motor_direction(DIRN_STOP);
-		queuePopFloor(nextFloor);
-    	elev_set_button_lamp(BUTTON_COMMAND, lastFloor, 0);
-    	switch(lastFloor){
-	        case 0:
-	            elev_set_button_lamp(BUTTON_CALL_UP, 0, 0);
-	            break;
-	        case 1:
-	            elev_set_button_lamp(BUTTON_CALL_UP, 1, 0);
-	            elev_set_button_lamp(BUTTON_CALL_DOWN, 1, 0);
-	            break;
-	        case 2:
-	            elev_set_button_lamp(BUTTON_CALL_UP, 2, 0);
-	            elev_set_button_lamp(BUTTON_CALL_DOWN, 2, 0);
-	            break;
-	        case 3:
-	            elev_set_button_lamp(BUTTON_CALL_DOWN, 3, 0);
-	            break;
-	        default:
-	            break;
-    	}
-	}
-	*/
 	return;
 	
 }	
 
-void fsmStopAtFloor(){
-	//int floor = elev_get_floor_sensor_signal();
-	//lastFloor = floor;
 
-	if(nextFloor == lastFloor && direction == 0) {
+void fsmStopAtFloor(){
+	if((nextFloor == lastFloor) && (direction == 0) && (timer_on == 0)){
+		timerStart();
+	}
+
+	if((nextFloor == lastFloor) && (direction == 0)) {
+		elev_set_door_open_lamp(1);
 		elev_clear_lamps(lastFloor);
 		elev_set_motor_direction(DIRN_STOP);
 		queuePopFloor(nextFloor);
     }
-	
+    
+    if(timeElapsed() >= 3){
+    	printf("timeElapsed: %le\n", timeElapsed());
+    	timerReset();
+		elev_set_door_open_lamp(0);
+    }
 }
-
-/*
-void fsmStopAtFloor(int floor) {
-
-	if(elev_get_floor_sensor_signal() == nextFloor){
-		elev_set_floor_indicator(lastFloor);
-		elev_set_motor_direction(DIRN_STOP);
-		lastFloor = nextFloor;
-		queuePopFloor(arrayUp, nextFloor);
-		queuePopFloor(arrayDown, nextFloor-1);
-		nextFloor = queueGetNextFloor(arrayDown, arrayUp, fsmSetDirection());
-
-	}
-	//Heisen oppdager at den kommer til en etasje
-	if (lastFloor != floor && floor != -1) {
-		lastFloor = floor;
-		elev_set_floor_indicator(lastFloor);
-
-		//Funksjonen sjekker om etasjen den nå har kommet til er den samme som correctFloor returnerer.  
-		if (fsmCorrectFloor(lastFloor, direction) == lastFloor) {
-			elev_set_motor_direction(DIRN_STOP);
-			direction = DIRN_STOP;
-			queuePopFloor(arrayUp, lastFloor);
-			queuePopFloor(arrayDown, lastFloor);
-			//timerStart();
-			
-			while (timeIsUp() == 0) {
-
-				elev_set_door_open_lamp(1);		//Funker dette, eller må den settes lav igjen etter while er ferdig? idk
-
-			}
-			elev_set_door_open_lamp(0);
-			
-		}
-
-	}
-}
-*/
