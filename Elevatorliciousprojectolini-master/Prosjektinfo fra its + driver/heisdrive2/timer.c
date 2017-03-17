@@ -1,42 +1,25 @@
 
-
+#include "timer.h"
 #include <time.h>
-#define initialTime = -1;
-#define maxTimeOpenDoor = 3;
+#include <stdio.h>
 
-//time_t is a type from time.h used to store calendar time
-//
 
-static time_t counterTime = initialTime;
+static clock_t counterTime;
+int timer_on = 0;
+int initialTime = 0;
 
 void timerStart(){
+ 	counterTime = clock();
+	timer_on = 1;
+}
 
-	initialTime = time(NULL);
-
-};
-
-void timerStopp(){
-
+void timerReset(){
 	counterTime = initialTime;
+	timer_on = 0;
+}
 
-};
-
-//Is time up:
-void timeIsUp(){
-
-	if (counterTime < 0){
-		return 0;
-	}
-
-	time_t now = time(0);
-
-	if (now - counterTime > maxTimeOpenDoor){
-		counterTime = initialTime;
-		return 1;
-	}
-
-	else{
-		return 0;
-	}
-
-};
+double timeElapsed(){
+ 	clock_t diff = clock()- counterTime;
+  	double time_elapsed = (double)(diff)/CLOCKS_PER_SEC;
+  	return time_elapsed;
+}

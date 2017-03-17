@@ -42,13 +42,13 @@ int queueGetNextFloor(int direction ,int floor){
 	}	
 
 	if((direction == 1 && floor != 3) || (direction == -1 && floor == 0)){		//Sets array to a value, which is used to choose between te two order-arrays.
-			array = 1;		//Chooses arrayUp
+			array = 1;			//Chooses arrayUp
 		}
 	else {
-		array = -1;			//Chooses arrayDown
+		array = -1;				//Chooses arrayDown
 	}
 
-	if(array == 1){			//i is used to iterate through the arrays, has differen values based on Up- or Down-array
+	if(array == 1){				//i is used to iterate through the arrays, has differen values based on Up- or Down-array
 		i = floor;			
 	}
 	if(array == -1){
@@ -57,7 +57,7 @@ int queueGetNextFloor(int direction ,int floor){
 
 	while(1){
 		if(array == 1){
-			if(arrayUp[i]){	//returns the position in the array if it is 1.
+			if(arrayUp[i]){		//returns the position in the array.
 				return i;
 			}
 
@@ -69,7 +69,7 @@ int queueGetNextFloor(int direction ,int floor){
 
 		}
 		if(i == 2){
-			array = -array;	//if it has reached the end of the current array, switches to the other array
+			array = -array;		//if it has reached the end of the current array, switches to the other array
 			i = -1;
 		}
 		i++;
@@ -85,7 +85,7 @@ void queueClear(){
 
 }
 
-//Printer ut hva køen inneholder:
+//Prints arrays, only used to check if correct floor was added:
 void queuePrint(){
 	printf("Up - array %d,%d,%d  ", arrayUp[0], arrayUp[1], arrayUp[2]);
 	printf("Down-array %d,%d,%d\n", arrayDown[2], arrayDown[1], arrayDown[0]);

@@ -6,26 +6,17 @@
 
 
 int main() {
-	fsmStart();									//initialization, goes to a floor and waits for an order.
+	fsmInit();									//initialization, goes down to a floor and waits for an order.
 
     while(1){
 		if (elev_get_stop_signal() == 1) {
-			fsmStop();							//Deletes orderes and sets stop-light.
+			fsmStop();							//Deletes orderes and runs stop-routines.
 		}
 		fsmTakeOrders();						//Orginizes orderes and put then in queue.
 		
-		fsmRun();
+		fsmRun();								//Gets next direction, next floor and starts motor.
 
-		fsmStopAtFloor();
-/*
-		if(moving == 0 && timer_on == 0){
-			//fsmRun();
-		}
-		etasje = elev_get_floor_sensor_signal();
-		if(etasje != -1){
-			fsmStopAtFloor(etasje);
-		}
-        */
+		fsmStopAtFloor();						//Checks if arrived at correct floor and runs correct-floor-routines.
 
     }
 
